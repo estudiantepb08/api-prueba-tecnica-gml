@@ -29,7 +29,6 @@ public class ClientRepositoryImpl implements IClientRepository{
 	@Override
 	public String save(ClientEntity clientEntity) {
 
-		//listClientEntities.forEach();
 		boolean saveList = listClientEntities.add(clientEntity);
 		String msg;
 

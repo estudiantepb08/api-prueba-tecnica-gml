@@ -2,7 +2,6 @@ package com.api.prueba.tecnica.gml.controllers;
 
 import com.api.prueba.tecnica.gml.entitys.ClientEntity;
 import com.api.prueba.tecnica.gml.services.IClientService;
-import jakarta.websocket.server.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,7 @@ import java.util.List;
 
 //@CrossOrigin(origins= {"http://localhost:4200"})
 @RestController
-@RequestMapping("api/")
+@RequestMapping("/api")
 public class ClientController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
@@ -45,15 +44,17 @@ public class ClientController {
 
 	@GetMapping("/clients")
 	public ResponseEntity<?> getClients(){
+		ResponseEntity<List<ClientEntity>> responseClients = null;
 		ResponseEntity<String> responseClient = null;
 		List<ClientEntity> clients = new ArrayList<>();
 		try {
 			clients = iClientService.allClient();
-			if(clients.size() > 1){
-				responseClient = ResponseEntity.status(HttpStatus.OK).body(clients.toString());
+			if(clients.size() >= 1){
+				responseClients = ResponseEntity.status(HttpStatus.OK).body(clients);
 			}else{
 				mesagess = "No se encontraron registros";
 				responseClient = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mesagess);
+				return responseClient;
 			}
 		}catch (Exception ex){
 			LOGGER.error("Error metodo guardar", ex.getCause().getMessage());
@@ -62,20 +63,22 @@ public class ClientController {
 			return responseClient;
 
 		}
-		return responseClient;
+		return responseClients;
 	}
 
 	@GetMapping("/clients/{id}")
 	public ResponseEntity<?> getClientById(@PathVariable String id){
+		ResponseEntity<List<ClientEntity>> responseClients = null;
 		ResponseEntity<String> responseClient = null;
 		List<ClientEntity> clients = new ArrayList<>();
 		try {
 			clients = iClientService.findById(id);
-			if(clients.size() == 1){
-				responseClient = ResponseEntity.status(HttpStatus.OK).body(clients.toString());
+			if(clients.size() >= 1){
+				responseClients = ResponseEntity.status(HttpStatus.OK).body(clients);
 			}else{
 				mesagess = "No se encontraron registros";
 				responseClient = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mesagess);
+				return responseClient;
 			}
 		}catch (Exception ex){
 			LOGGER.error("Error metodo guardar", ex.getCause().getMessage());
@@ -84,7 +87,7 @@ public class ClientController {
 			return responseClient;
 
 		}
-		return responseClient;
+		return responseClients;
 	}
 
 }

@@ -16,7 +16,8 @@ class ClientServiceImplTest {
     private ClientEntity clientEntity;
     @Autowired
     private IClientService iClientService;
-    private ClientServiceImpl clientService;
+    @Autowired
+    private ClientServiceImpl clientServiceImpl;
 
     @BeforeEach
     void setUp() {
@@ -24,15 +25,16 @@ class ClientServiceImplTest {
         clientEntity.setSharedKey("tprueba");
         clientEntity.setBusinessId("test prueba");
         clientEntity.setEmail("testprueba@gmail.com");
-        clientEntity.setPhone(3156231042L);
+        clientEntity.setPhone("3156231042");
         clientEntity.setDataAdded(new Date());
+        clientServiceImpl = new ClientServiceImpl();
     }
 
     @DisplayName("Dada la necesidad de crear un nuevo cliente")
     @Test
     void saveClient() {
         String esperado = "Save sucess";
-        String resultado = clientService.saveClient(new ClientEntity("tprueba", "test prueba", "testprueba@gmail.com", 3156231042L, new Date()));
+        String resultado = clientServiceImpl.saveClient(clientEntity );
         Assertions.assertEquals(esperado, resultado);
     }
 
