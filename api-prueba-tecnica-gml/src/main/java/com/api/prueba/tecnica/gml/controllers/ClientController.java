@@ -10,14 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-//@CrossOrigin(origins= {"http://localhost:4200"})
+@CrossOrigin(origins= {"http://localhost:4200"})
 @RestController
 @RequestMapping("/api")
 public class ClientController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClientController.class);
+	final Map<String,String> RESPONSE = new HashMap<>();
 
 	@Autowired
 	private IClientService iClientService;
@@ -25,17 +28,19 @@ public class ClientController {
 
 	@PostMapping("/clients")
 	public ResponseEntity<?> saveClient(@RequestBody ClientEntity clientEntity) {
-		ResponseEntity<String> responseClient = null;
+		ResponseEntity<Map<String,String>> responseClient = null;
 		try {
 			mesagess = iClientService.saveClient(clientEntity);
+			RESPONSE.put("msj",mesagess);
 			if(mesagess.equals("Save sucess")){
-				responseClient = ResponseEntity.status(HttpStatus.CREATED).body(mesagess);
+				//new ResponseEntity<Map<String,String>>(RESPONSE, HttpStatus.CREATED);
+				responseClient = ResponseEntity.status(HttpStatus.CREATED).body(RESPONSE);
 			}else{
-				responseClient = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mesagess);
+				responseClient = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(RESPONSE);
 			}
 		}catch (Exception ex){
 			LOGGER.error("Error metodo guardar", ex.getCause().getMessage());
-			responseClient = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mesagess);
+			responseClient = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(RESPONSE);
 			return responseClient;
 
 		}
